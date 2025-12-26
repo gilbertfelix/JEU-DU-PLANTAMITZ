@@ -1,22 +1,24 @@
 #include "header.h"
 
 int main() {
-    srand(time(NULL)); // initialisation de rand()
+
+    srand(time(NULL)); // Initialisation du générateur aléatoire
 
     char plateau[L][C];
 
-    // Remplir le plateau au hasard
+    // Génération du plateau initial
+    // Plateau garanti stable dès la génération
     remplir_plateau(plateau);
 
-    // Vérifier et régénérer si des alignements interdits existent
-    if (alignement_existe(plateau)) {
-        printf("Alignements détectés, régénération du plateau...\n");
-        regenerer_si_alignement(plateau);
-    }
-
-    // Affichage du plateau final
-    printf("\nPlateau initial %dx%d sans alignement automatique :\n\n", L, C);
+    // Affichage du plateau initial
+    printf("\nPlateau initial %dx%d (sans alignement automatique) :\n\n", L, C);
     afficher_plateau(plateau);
+
+    // --- La logique de jeu viendra ici ---
+    // sélection d’items
+    // permutation
+    // détection des alignements
+    // suppression + chute
 
     return 0;
 }
