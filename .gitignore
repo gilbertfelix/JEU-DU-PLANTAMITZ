@@ -1,0 +1,13 @@
+# Code::Blocks
+bin/
+obj/
+*.layout
+*.depend
+
+# VS Code
+.vscode/
+
+# Doxygen
+html/
+latex/
+Doxyfile
