@@ -4,9 +4,9 @@
 // Fonction 1 : Générer un item aléatoire
 // =========================
 char generer_item(void) {
-    char items[] = {'S', 'F', 'P', 'O', 'M'}; // Soleil, Fraise, Pomme, Oignon, Mandarine
+    char item[] = {'S', 'F', 'P', 'O', 'M'}; // Soleil, Fraise, Pomme, Oignon, Mandarine
     int index = rand() % 5;  // choisir un index aléatoire
-    return items[index];
+    return item[index];
 }
 
 // =========================
@@ -103,18 +103,56 @@ int alignement_existe(char tab[L][C]) {
 // Fonction 4 : Régénérer le plateau tant qu'il y a des alignements
 // =========================
 void regenerer_si_alignement(char tab[L][C]) {
-    while (alignement_existe(tab)) {
+    int tentatives = 0;
+    int max = 100;  // limite à 100 tentatives max
+
+    while (alignement_existe(tab) && tentatives < max) {
         remplir_plateau(tab);
+        tentatives++;
+
+        // Affiche une trace toutes les 10 tentatives
+        if (tentatives % 10 == 0) {
+            printf("Tentative %d...\n", tentatives);
+        }
+    }
+
+    if (tentatives >= max) {
+        printf("Arret apres %d tentatives\n", max);
     }
 }
 
-// =========================
-// Fonction utilitaire : afficher le plateau
-// =========================
+void Color(int couleurDuTexte,int couleurDeFond) // fonction d'affichage de couleurs
+{
+HANDLE H=GetStdHandle(STD_OUTPUT_HANDLE);
+SetConsoleTextAttribute(H,couleurDeFond*16+couleurDuTexte);
+}
+
+void afficher_items(char item) {
+    switch(item) {
+        case 'S':
+            Color(14,0); // Jaune pour Soleil
+            break;
+        case 'F':
+            Color(12,0); // Rouge pour Fraise
+            break;
+        case 'P':
+            Color(10,0); // Vert pour Pomme
+            break;
+        case 'O':
+            Color(8,0); // Gris pour Oignon
+            break;
+        case 'M':
+            Color(13,0); // Magenta pour Mandarine
+            break;
+        default: Color(15,0); break ;
+    }
+    printf("%c ", item);
+    Color(15,0); // Réinitialiser la couleur
+}
 void afficher_plateau(char tab[L][C]) {
     for (int i = 0; i < L; i++) {
         for (int j = 0; j < C; j++) {
-            printf("%c ", tab[i][j]);
+           afficher_items(tab[i][j]);
         }
         printf("\n");
     }
