@@ -1,22 +1,19 @@
 #include "header.h"
 
 int main() {
-    srand(time(NULL)); // initialisation de rand()
+  srand(time(NULL)); // Initialiser le gï¿½nï¿½rateur de nombres alï¿½atoires
 
     char plateau[L][C];
 
-    // Remplir le plateau au hasard
+    // Remplir le plateau initialement
     remplir_plateau(plateau);
 
-    // Vérifier et régénérer si des alignements interdits existent
-    if (alignement_existe(plateau)) {
-        printf("Alignements détectés, régénération du plateau...\n");
-        regenerer_si_alignement(plateau);
-    }
+    // RegÃ©nÃ©rer le plateau tant qu'il y a des alignements interdits
+    regenerer_si_alignement(plateau);
 
-    // Affichage du plateau final
-    printf("\nPlateau initial %dx%d sans alignement automatique :\n\n", L, C);
+    // Afficher le plateau final
     afficher_plateau(plateau);
+    system("pause");
 
     return 0;
 }

@@ -16,5 +16,7 @@ void remplir_plateau(char tab[L][C]);
 int alignement_existe(char tab[L][C]);
 void regenerer_si_alignement(char tab[L][C]);
 void afficher_plateau(char tab[L][C]);
+void Color(int couleurDuTexte, int couleurDFond);
+void afficher_items(char item);
 
 #endif
