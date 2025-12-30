@@ -13,6 +13,7 @@ int main() {
     // Affichage du plateau initial
     printf("\nPlateau initial %dx%d (sans alignement automatique) :\n\n", L, C);
     afficher_plateau(plateau);
+    gotoligcol(0,0);
 
     // --- La logique de jeu viendra ici ---
     // sélection d’items

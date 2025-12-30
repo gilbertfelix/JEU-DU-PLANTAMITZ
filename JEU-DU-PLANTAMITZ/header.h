@@ -31,5 +31,6 @@ void afficher_items(char item);
 
 // Changement de couleur du texte et du fond dans la console
 void Color(int couleurDuTexte, int couleurDeFond);
+void gotoligcol( int lig, int col );
 
 #endif
