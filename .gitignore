@@ -1,9 +1,9 @@
 # Code::Blocks
 bin/
 obj/
-*.layout
+
 *.depend
-*.cbp
+
 
 # VS Code
 .vscode/
