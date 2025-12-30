@@ -4,137 +4,151 @@
 // Fonction 1 : Générer un item aléatoire
 // =========================
 char generer_item(void) {
-    char item[] = {'S', 'F', 'P', 'O', 'M'};
-    return item[rand() % 5];
+    char items[] = {'S', 'F', 'P', 'O', 'M'}; // Soleil, Fraise, Pomme, Oignon, Mandarine
+    int index = rand() % 5;  // choisir un index aléatoire
+    return items[index];
 }
 
 // =========================
-// Fonction 2 : Remplir le plateau
-// Génération contrôlée : plateau stable dès le départ
+// Fonction 2 : Remplir le plateau au hasard
 // =========================
 void remplir_plateau(char tab[L][C]) {
-
     for (int i = 0; i < L; i++) {
         for (int j = 0; j < C; j++) {
-
-            char c;
-            int valide = 0;
-
-            while (!valide) {
-                c = generer_item();
-                valide = 1;
-
-                // Alignement horizontal interdit
-                if (j >= 2 &&
-                    tab[i][j-1] == c &&
-                    tab[i][j-2] == c)
-                    valide = 0;
-
-                // Alignement vertical interdit
-                if (valide && i >= 2 &&
-                    tab[i-1][j] == c &&
-                    tab[i-2][j] == c)
-                    valide = 0;
-
-                // Rectangle 2x2 interdit
-                if (valide && i >= 1 && j >= 1 &&
-                    tab[i-1][j] == c &&
-                    tab[i][j-1] == c &&
-                    tab[i-1][j-1] == c)
-                    valide = 0;
-
-                // Figure en H interdite
-                if (valide && i >= 2 && j >= 2 &&
-                    tab[i][j-2] == c &&
-                    tab[i-1][j-2] == c &&
-                    tab[i-1][j-1] == c &&
-                    tab[i-1][j]   == c &&
-                    tab[i-2][j-2] == c &&
-                    tab[i-2][j]   == c)
-                    valide = 0;
-            }
-
-            tab[i][j] = c;
+            tab[i][j] = generer_item();
         }
     }
 }
 
 // =========================
-// Fonction 3 : Détection des alignements
-// Utilisée PENDANT le jeu
+// Fonction 3 : Vérifier alignement de 3 items
 // =========================
 int alignement_existe(char tab[L][C]) {
 
-    // Horizontaux
+    // --------------------------
+    // 1. GROUPES DE 3, 4, ou 5 HORIZONTAUX
+    // --------------------------
     for (int i = 0; i < L; i++) {
         int count = 1;
         for (int j = 1; j < C; j++) {
             if (tab[i][j] == tab[i][j-1]) {
                 count++;
-                if (count >= 3) return 1;
-            } else count = 1;
+                if (count >= 3) return 1; // groupe interdit
+            } else {
+                count = 1;
+            }
         }
     }
 
-    // Verticaux
+    // --------------------------
+    // 2. GROUPES DE 3, 4 ou 5 VERTICAUX
+    // --------------------------
     for (int j = 0; j < C; j++) {
         int count = 1;
         for (int i = 1; i < L; i++) {
             if (tab[i][j] == tab[i-1][j]) {
                 count++;
-                if (count >= 3) return 1;
-            } else count = 1;
+                if (count >= 3) return 1; // groupe interdit
+            } else {
+                count = 1;
+            }
         }
     }
 
-    // Rectangle 2x2
-    for (int i = 0; i < L - 1; i++)
+    // --------------------------
+    // 3. RECTANGLE 2x2 MINIMUM
+    // --------------------------
+    for (int i = 0; i < L - 1; i++) {
         for (int j = 0; j < C - 1; j++) {
             char x = tab[i][j];
             if (tab[i][j+1] == x &&
                 tab[i+1][j] == x &&
                 tab[i+1][j+1] == x)
-                return 1;
+            {
+                return 1; // rectangle interdit
+            }
         }
+    }
 
-    // Figure en H
-    for (int i = 0; i < L - 2; i++)
+    // --------------------------
+    // 4. FIGURE EN H
+    // --------------------------
+    // forme :
+    // x . x
+    // x x x
+    // x . x
+    for (int i = 0; i < L - 2; i++) {
         for (int j = 0; j < C - 2; j++) {
-            char x = tab[i][j];
-            if (tab[i][j+2] == x &&
-                tab[i+1][j] == x &&
-                tab[i+1][j+1] == x &&
-                tab[i+1][j+2] == x &&
-                tab[i+2][j] == x &&
-                tab[i+2][j+2] == x)
-                return 1;
-        }
 
-    return 0;
+            char x = tab[i][j];
+
+            if ( tab[i][j] == x &&         // haut gauche
+                 tab[i][j+2] == x &&       // haut droite
+                 tab[i+1][j] == x &&       // centre gauche
+                 tab[i+1][j+1] == x &&     // centre milieu
+                 tab[i+1][j+2] == x &&     // centre droite
+                 tab[i+2][j] == x &&       // bas gauche
+                 tab[i+2][j+2] == x )      // bas droite
+            {
+                return 1; // H interdit
+            }
+        }
+    }
+
+    return 0; // Aucun alignement ni figure spéciale → plateau stable
+}
+
+
+// =========================
+// Fonction 4 : Régénérer le plateau tant qu'il y a des alignements
+// =========================
+void regenerer_si_alignement(char tab[L][C]) {
+    while (alignement_existe(tab)) {
+        remplir_plateau(tab);
+    }
 }
 
 // =========================
-// Gestion des couleurs et affichage
+// Fonction utilitaire : afficher le plateau
 // =========================
-void Color(int couleurDuTexte, int couleurDeFond) {
-    HANDLE H = GetStdHandle(STD_OUTPUT_HANDLE);
-    SetConsoleTextAttribute(H, couleurDeFond * 16 + couleurDuTexte);
+void afficher_plateau(char tab[L][C]) {
+    for (int i = 0; i < L; i++) {
+        for (int j = 0; j < C; j++) {
+            printf("%c ", tab[i][j]);
+        }
+        printf("\n");
+    }
+}
+
+void Color(int couleurDuTexte,int couleurDeFond) // fonction d'affichage de couleurs
+{
+HANDLE H=GetStdHandle(STD_OUTPUT_HANDLE);
+SetConsoleTextAttribute(H,couleurDeFond*16+couleurDuTexte);
 }
 
 void afficher_items(char item) {
     switch(item) {
-        case 'S': Color(14,0); break;
-        case 'F': Color(12,0); break;
-        case 'P': Color(10,0); break;
-        case 'O': Color(8,0);  break;
-        case 'M': Color(13,0); break;
-        default:  Color(15,0);
+        case 'S':
+            Color(14,0); // Jaune pour Soleil
+            break;
+        case 'F':
+            Color(12,0); // Rouge pour Fraise
+            break;
+        case 'P':
+            Color(10,0); // Vert pour Pomme
+            break;
+        case 'O':
+            Color(8,0); // Gris pour Oignon
+            break;
+        case 'M':
+            Color(13,0); // Magenta pour Mandarine
+            break;
+        default:
+          Color(7,0); // Blanc par défaut
     }
-    printf("%c ", item);
-    Color(15,0);
+    Color(7,0); // Réinitialiser la couleur
 }
-
-void afficher_plateau(char tab[L][C]) {
+void afficher_plateau_couleur(char tab[L][C]) {
     for (int i = 0; i < L; i++) {
         for (int j = 0; j < C; j++) {
             afficher_items(tab[i][j]);
