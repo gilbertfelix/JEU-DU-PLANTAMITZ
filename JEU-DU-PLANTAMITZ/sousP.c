@@ -134,10 +134,26 @@ void afficher_items(char item) {
     Color(15,0);
 }
 
-void afficher_plateau(char tab[L][C]) {
+void afficher_plateau(char tab[L][C], Curseur *c) {
     for (int i = 0; i < L; i++) {
+            //gotoligcol(7+ i , 6);
         for (int j = 0; j < C; j++) {
-            afficher_items(tab[i][j]);
+            gotoligcol(5+ i , 2+ (j*2));
+
+            char  item = tab[i][j];
+
+            if (c->selectionne && i == c->sel_i && j == c->sel_j){
+                item = tolower(item);
+            }
+
+            if(i== c->ligne && j == c-> colonne ){
+                Color(0,15);
+                printf("%c ",item);
+                Color(0,15);
+            }else {
+                 afficher_items(tab[i][j]);
+            }
+
         }
         printf("\n");
     }
