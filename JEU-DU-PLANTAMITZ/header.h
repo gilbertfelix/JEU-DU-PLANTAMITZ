@@ -18,6 +18,23 @@ typedef struct{
     int sel_j;
 }Curseur;
 
+typedef struct{
+    int soleil_requis;
+    int fraise_requis;
+    int pomme_requis;
+    int oignon_requis;
+    int mandarine_requis;
+
+    int soleil_actuel;
+    int fraise_actuel;
+    int pomme_actuel;
+    int oignon_actuel;
+    int mandarine_actuel;
+
+    int coups_max;
+    int coups_restants;
+} Contrat;
+
 // =========================
 // Prototypes des fonctions
 // =========================
@@ -48,5 +65,7 @@ void supprimer_marques(char tab[L][C], int marque[L][C]);
 void faire_tomber_item(char tab[L][C]);
 void remplir_vide(char tab[L][C]);
 int stabiliser_plateau(char tab[L][C]);
+void initialiser_contrat(Contrat *c, int niveau);
+void afficher_contrat(Contrat *c);
 
 #endif
