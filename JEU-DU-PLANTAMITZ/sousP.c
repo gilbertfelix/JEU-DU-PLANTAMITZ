@@ -97,6 +97,57 @@ int alignement_existe(char tab[L][C]) {
                 return 1;
         }
 
+        int rectangle(char tab[L][C],int *surface_rectangle )
+        {
+        //parcourrir le plateau pour rechercher les dimensions du rectangle
+            int i,j,y,z;
+            for ( i = 0; i < L; i++)
+            {
+                for ( j = 0; j < C; j++)
+                {
+
+                char x = T[i][j];
+
+        // parcourrir le plateau pour regarder les items identiques en longueur et en largeur
+
+                largeur = 0;
+                while (j + largeur < C && T[i][j + largeur] == x)
+                    largeur++;
+
+                int longueur = 0;
+                while (i + longueur < L && T[i + longueur][j] == x)
+                    longeur++;
+
+                int rectangle = 1;
+
+        // parcourrir la surface donc les items sont identique en longueur et en largeur
+
+                    for ( y = 0; y < hauteur; y++)
+                    {
+                        for (z = 0; z < largeur; z++)
+                        {
+        //Cas ou les items ne  forment pas un rectangle plein
+
+                            if (T[i + x][j + y] != x)
+                            {
+                                    rectangle = 0;
+                                return 0;
+                                    break;
+                            }
+
+        //vérification si les items forment biens un rectangle plein
+
+                            if (rectangle && largeur >= 2 && hauteur >= 2 && T[i + x][j + y] == x)
+
+                            {
+                                 return surface_rectangle;
+                            }
+                        }
+                    }
+                }
+            }
+     }
+
     // Figure en H
     for (int i = 0; i < L - 2; i++)
         for (int j = 0; j < C - 2; j++) {
