@@ -138,7 +138,7 @@ void afficher_plateau(char tab[L][C], Curseur *c) {
     for (int i = 0; i < L; i++) {
             //gotoligcol(7+ i , 6);
         for (int j = 0; j < C; j++) {
-            gotoligcol(5+ i , 2+ (j*2));
+            gotoligcol(5 + i , 2+ (j*2));
 
             char  item = tab[i][j];
 
@@ -155,7 +155,6 @@ void afficher_plateau(char tab[L][C], Curseur *c) {
             }
 
         }
-        printf("\n");
     }
 }
 

@@ -31,7 +31,17 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
+		<Unit filename="curseur.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="gestion_contrats.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="header.h" />
 		<Unit filename="main.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="sousP.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Extensions />

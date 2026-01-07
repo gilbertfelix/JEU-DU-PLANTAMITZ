@@ -33,7 +33,19 @@ typedef struct{
 
     int coups_max;
     int coups_restants;
+
+    int score;
+    int vies;
+
+    time_t temps_debut;
+    int temps_limite;
 } Contrat;
+
+typedef struct{
+    char nom[50];
+    int niveau_actuel;
+    int score_total;
+}Joueur;
 
 // =========================
 // Prototypes des fonctions
@@ -64,8 +76,15 @@ int suppression(char tab[L][C], int marque[L][C]);
 void supprimer_marques(char tab[L][C], int marque[L][C]);
 void faire_tomber_item(char tab[L][C]);
 void remplir_vide(char tab[L][C]);
-int stabiliser_plateau(char tab[L][C]);
+int stabiliser_plateau(char tab[L][C],Contrat *c);
 void initialiser_contrat(Contrat *c, int niveau);
 void afficher_contrat(Contrat *c);
+void compter_items_supprime(char tab[L][C], int marque[L][C],Contrat *c );
+int calculer_points(char tab[L][C], int marque[L][C]);
+int contrat_rempli(Contrat *c);
+int temps_contrat(Contrat *c);
+void sauvegarder_progression(const char *nom_joueur,int niveau_atteint,int score);
+int charger_progression(char *nom_joueur, int *niveau_atteint, int *score);
+void supprimer_sauvegarde();
 
 #endif

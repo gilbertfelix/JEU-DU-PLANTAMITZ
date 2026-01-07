@@ -1,7 +1,7 @@
-include "header.h"
+#include "header.h"
 
 void sauvegarder_progression(const char *nom_joueur,int niveau_atteint,int score){
-    File *fichier = fopen("plantamitz.txt", "w");
+    FILE *fichier = fopen("plantamitz.txt", "w");
 
     if (fichier == NULL){
         printf("Erreur : impossible de sauvegarder la progression.\n");
@@ -9,8 +9,8 @@ void sauvegarder_progression(const char *nom_joueur,int niveau_atteint,int score
     }
 
     fprintf(fichier, "%s\n", nom_joueur);
-    fprintf(fichier, "%s\n", niveau_atteint);
-    fprintf(fichier, "%s\n", score);
+    fprintf(fichier, "%d\n", niveau_atteint);
+    fprintf(fichier, "%d\n", score);
 
     fclose(fichier);
     printf("\n Progression sauvegardée ! \n");
@@ -26,7 +26,7 @@ int charger_progression(char *nom_joueur, int *niveau_atteint, int *score){
 
     if(fscanf(fichier, "%49s\n%d\n%d", nom_joueur, niveau_atteint,score) != 3){
         fclose(fichier);
-        return0;
+        return 0;
     }
 
     fclose(fichier);

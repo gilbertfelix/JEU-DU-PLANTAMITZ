@@ -63,10 +63,11 @@ void permuter_item(char tab[L][C], Curseur *c, char direction){
     tab[c->sel_i][c->sel_j] = tab[position_i][position_j];
     tab[position_i][position_j] = temp;
 
-    c->ligne = position_i;
-    c->colonne = position_j;
+    /*c->colonne = position_j;
     c->sel_i = position_i;
-    c->sel_j = position_j;
+    c->sel_j = position_j;*/
+
+    c->selectionne =0;
 
 }
 
@@ -196,12 +197,15 @@ void supprimer_marques(char tab[L][C], int marque[L][C]){
      }
  }
 
-int stabiliser_plateau(char tab[L][C]){
+int stabiliser_plateau(char tab[L][C],Contrat *c){
      int total_supprime = 0;
      int marque[L][C];
       int nb;
 
       while((nb = suppression(tab,marque)) >0 ){
+            int points = calculer_points(tab,marque);
+                c->score += points;
+            compter_items_supprime(tab,marque,c);
         total_supprime += nb;
 
         supprimer_marques(tab,marque);
