@@ -14,6 +14,8 @@ int main() {
     int niveau_depart = 1;
     int score_precedent = 0;
 
+    demarrer_musique();
+
     if(charger_progression(joueur.nom,&niveau_depart, &score_precedent)){
         printf("\n Sauvegarde trouvée \n");
         printf("Joueur : %s\n", joueur.nom);
@@ -51,10 +53,12 @@ int main() {
     // Plateau garanti stable dès la génération
     remplir_plateau(plateau);
     initialiser_contrat(&contrat,1);
+    contrat.vies = 5;
     curseur.ligne =0;
     curseur.colonne=0;
     curseur.selectionne= 0;
     int jeu_termine = 0;
+    int vies_niveau = 5;
 
     while (!jeu_termine){
             system("cls");
@@ -78,15 +82,34 @@ int main() {
             joueur.niveau_actuel++;
             printf("\n Passage au niveau %d ! \n",joueur.niveau_actuel);
             sauvegarder_progression(joueur.nom,joueur.niveau_actuel,joueur.score_total);
+
+            printf("\nAppuyer sur un touche...");
+            getch();
+
+            remplir_plateau(plateau);
+            initialiser_contrat(&contrat, joueur.niveau_actuel);
+            contrat.vies =5;
+            curseur.ligne = 0;
+            curseur.colonne = 0;
+            curseur.selectionne = 0;
+            continue;
+
+
         } else {
             printf(" NIVEAUX TERMINES FELICITATIONS !!! \n");
             supprimer_sauvegarde();
             joueur.niveau_actuel = 1;
+             printf("\nAppuyer sur un touche...");
+            getch();
+            jeu_termine = 1;
         }
+        continue;
     }
 
      if(temps_contrat(&contrat)<=0){
-            contrat.vies--;
+            vies_niveau--;
+            contrat.vies = vies_niveau;
+
             system("cls");
             afficher_contrat(&contrat);
             afficher_plateau(plateau,&curseur);
@@ -113,12 +136,12 @@ int main() {
                 // Recommencer le niveau
                 remplir_plateau(plateau);
                 initialiser_contrat(&contrat, joueur.niveau_actuel);
-                //contrat.vies = contrat.vies; // Garder les vies
+                contrat.vies = vies_niveau;
                 curseur.ligne = 0;
                 curseur.colonne = 0;
                 curseur.selectionne = 0;
             } else {
-                contrat.vies--;
+
                 sauvegarder_progression(joueur.nom,joueur.niveau_actuel,joueur.score_total);
                 jeu_termine = 1;
             }
@@ -128,14 +151,15 @@ int main() {
 
 
         if(contrat.coups_restants <= 0){
-            contrat.vies--;
+            vies_niveau--;
+            contrat.vies = vies_niveau;
 
             system("cls");
             afficher_contrat(&contrat);
             afficher_plateau(plateau,&curseur);
 
             printf("\n PLUS DE COUPS \n");
-            printf("\nVies : %d\5\n", contrat.vies);
+            printf("\nVies : %d\5\n", vies_niveau);
 
     /* printf("\n\n>>> PLUS DE COUPS ! <<<\n");
             printf("Vies restantes : %d/5\n", contrat.vies);*/
@@ -156,7 +180,7 @@ int main() {
                 // Recommencer le niveau
                 remplir_plateau(plateau);
                 initialiser_contrat(&contrat, joueur.niveau_actuel);
-                //contrat.vies = contrat.vies; // Garder les vies
+                contrat.vies = vies_niveau; // Garder les vies
                 curseur.ligne = 0;
                 curseur.colonne = 0;
                 curseur.selectionne = 0;
@@ -170,6 +194,12 @@ int main() {
         }
 
     touche = getch();
+
+     if(touche == 'm' || touche == 'M'){
+                toggle_musique();
+                getch();
+                continue;
+            }
 
     if(touche == 27 ) {
             //contrat.vies--;

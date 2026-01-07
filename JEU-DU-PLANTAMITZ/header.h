@@ -6,6 +6,7 @@
 #include <time.h>
 #include <conio.h>
 #include <windows.h>
+#include <mmsystem.h>
 
 #define L 25   // nombre de lignes du plateau
 #define C 45   // nombre de colonnes du plateau
@@ -83,8 +84,14 @@ void compter_items_supprime(char tab[L][C], int marque[L][C],Contrat *c );
 int calculer_points(char tab[L][C], int marque[L][C]);
 int contrat_rempli(Contrat *c);
 int temps_contrat(Contrat *c);
+
 void sauvegarder_progression(const char *nom_joueur,int niveau_atteint,int score);
 int charger_progression(char *nom_joueur, int *niveau_atteint, int *score);
 void supprimer_sauvegarde();
+
+
+void demarrer_musique();
+void arreter_musique();
+void toggle_musique();
 
 #endif

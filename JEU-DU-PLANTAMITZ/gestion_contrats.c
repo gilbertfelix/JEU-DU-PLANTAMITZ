@@ -8,7 +8,7 @@ void initialiser_contrat(Contrat *c, int niveau){
     c->oignon_actuel =0;
     c->mandarine_actuel =0;
     c->score = 0;
-    c->vies = 5;
+
 
     c->temps_debut = time(NULL);
 
@@ -74,7 +74,7 @@ void afficher_contrat(Contrat *c){
     else if(temps_restant < 60)  Color(14, 0);
     else Color(10, 0);
 
-    printf("== NIVEAU %d == Score: %d pts  vies: %d/5  Temps:%02d:%02d\n",niveau,c->score,c->vies,minutes,secondes);
+    printf("== NIVEAU 1 == Score: %d pts  vies: %d/5  Temps:%02d:%02d\n",c->score,c->vies,minutes,secondes);
 
     gotoligcol(2, 0);
 
