@@ -1,7 +1,9 @@
 #include "header.h"
 
+
 void initialiser_contrat(Contrat *c, int niveau){
 
+    c->niveau_actuel = niveau;
     c->soleil_actuel =0;
     c->fraise_actuel =0;
     c->pomme_actuel =0;
@@ -20,9 +22,9 @@ void initialiser_contrat(Contrat *c, int niveau){
         c->pomme_requis= 10;
         c->oignon_requis = 10;
         c->mandarine_requis=10;
-        c->coups_max = 10;
+        c->coups_max = 20;
         c->coups_restants = c->coups_max;
-        c->temps_limite = 180;
+        c->temps_limite = 340;
         break;
 
     case 2:
@@ -74,7 +76,7 @@ void afficher_contrat(Contrat *c){
     else if(temps_restant < 60)  Color(14, 0);
     else Color(10, 0);
 
-    printf("== NIVEAU 1 == Score: %d pts  vies: %d/5  Temps:%02d:%02d\n",c->score,c->vies,minutes,secondes);
+    printf("== NIVEAU %d == Score: %d pts  vies: %d/5  Temps:%02d:%02d\n",c->niveau_actuel, c->score,c->vies,minutes,secondes);
 
     gotoligcol(2, 0);
 

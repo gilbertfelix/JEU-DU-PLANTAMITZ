@@ -4,6 +4,7 @@ int main() {
 
     srand(time(NULL)); // Initialisation du générateur aléatoire
 
+    // == Déclaration des variables
     char plateau[L][C];
     Curseur curseur = { 0, 0, 0, 0, 0};
     char touche;
@@ -16,8 +17,9 @@ int main() {
 
     demarrer_musique();
 
+    // == CHARGEMENT DE PROGRESSION ==
     if(charger_progression(joueur.nom,&niveau_depart, &score_precedent)){
-        printf("\n Sauvegarde trouvée \n");
+        printf("\n Sauvegarde trouvee \n");
         printf("Joueur : %s\n", joueur.nom);
         printf("Niveau atteint : %d\n", niveau_depart);
         printf("Score : %d\n", score_precedent);
@@ -32,9 +34,11 @@ int main() {
                 niveau_depart = 1;
                 score_precedent  = 0;
             }
-
+            // Initialise les données du joueur
             joueur.niveau_actuel = niveau_depart;
             joueur.score_total = score_precedent;
+
+            // == BOUCLE PRINCIPALE DU MENU ==
 
     do{
     system("cls");
@@ -42,17 +46,17 @@ int main() {
 
     printf("Joueur : %s\n\n", joueur.nom);
     printf("1.Jouer (Niveau %d)\n", joueur.niveau_actuel);
-    printf("2.Règles du jeu\n");
+    printf("2.Regles du jeu\n");
     printf("3.Quitter\n");
     printf("Votre choix\n");
 
     scanf("%d",&choix);
+    // == OPTION 1: JOUER ==
     if(choix == 1){
 
-    // Génération du plateau initial
-    // Plateau garanti stable dès la génération
+    // Initialise le niveau
     remplir_plateau(plateau);
-    initialiser_contrat(&contrat,1);
+    initialiser_contrat(&contrat,joueur.niveau_actuel);
     contrat.vies = 5;
     curseur.ligne =0;
     curseur.colonne=0;
@@ -60,17 +64,20 @@ int main() {
     int jeu_termine = 0;
     int vies_niveau = 5;
 
+    // == BOUCLE DU JEU ==
+
     while (!jeu_termine){
             system("cls");
             afficher_contrat(&contrat);
 
-    // Affichage du plateau initial
+
     afficher_plateau(plateau,&curseur);
 
+            // == VERIFICATION : CONTRAT REMPLI ===
     if(contrat_rempli(&contrat)){
         joueur.score_total += contrat.score;
 
-        system("cls");
+
         afficher_contrat(&contrat);
         afficher_plateau(plateau,&curseur);
 
@@ -78,6 +85,7 @@ int main() {
         printf("\nScore du niveau : %d pts\n", contrat.score);
         printf("Score total : %d pts\n", joueur.score_total);
 
+        //Passage au niveau suivant
         if(joueur.niveau_actuel < 3){
             joueur.niveau_actuel++;
             printf("\n Passage au niveau %d ! \n",joueur.niveau_actuel);
@@ -86,9 +94,11 @@ int main() {
             printf("\nAppuyer sur un touche...");
             getch();
 
+            //Réinitialisation du niveau suivant
             remplir_plateau(plateau);
             initialiser_contrat(&contrat, joueur.niveau_actuel);
-            contrat.vies =5;
+            vies_niveau = 5;
+            contrat.vies = 5;
             curseur.ligne = 0;
             curseur.colonne = 0;
             curseur.selectionne = 0;
@@ -106,19 +116,13 @@ int main() {
         continue;
     }
 
+    // Vérification du temps écoulé
      if(temps_contrat(&contrat)<=0){
             vies_niveau--;
             contrat.vies = vies_niveau;
 
-            system("cls");
-            afficher_contrat(&contrat);
-            afficher_plateau(plateau,&curseur);
-
             printf("\n TEMPS ECOULE \n");
             printf("\nVies : %d\5\n", contrat.vies);
-
-    /* printf("\n\n>>> PLUS DE COUPS ! <<<\n");
-            printf("Vies restantes : %d/5\n", contrat.vies);*/
 
             if(contrat.vies <= 0) {
                 printf("\n>>> VOUS AVEZ PERDU ! <<<\n");
@@ -149,20 +153,19 @@ int main() {
 
         }
 
+        // verification : plus de coups
 
         if(contrat.coups_restants <= 0){
             vies_niveau--;
             contrat.vies = vies_niveau;
 
-            system("cls");
+            /*system("cls");
             afficher_contrat(&contrat);
-            afficher_plateau(plateau,&curseur);
+            afficher_plateau(plateau,&curseur);*/
 
             printf("\n PLUS DE COUPS \n");
             printf("\nVies : %d\5\n", vies_niveau);
 
-    /* printf("\n\n>>> PLUS DE COUPS ! <<<\n");
-            printf("Vies restantes : %d/5\n", contrat.vies);*/
 
             if(contrat.vies <= 0) {
                 printf("\n>>> VOUS AVEZ PERDU ! <<<\n");
@@ -193,6 +196,7 @@ int main() {
 
         }
 
+        // GESTION DES TOUCHES
     touche = getch();
 
      if(touche == 'm' || touche == 'M'){
@@ -208,7 +212,7 @@ int main() {
             system("cls");
             //printf("\n>>> Vous avez quitté le niveau <<<\n");
             //printf("Vies restantes : %d/5\n", contrat.vies);
-            printf("\n Progression sauvegardée! ");
+            printf("\n Progression sauvegardee! ");
             getch();
             jeu_termine = 1;
             continue;
@@ -216,10 +220,14 @@ int main() {
     if (touche == 32) {
         selectionner_item(&curseur);
 
+        // si u item est sélectionné: permutation
+
     } else if (curseur.selectionne){
 
         int dest_i = curseur.sel_i;
         int dest_j = curseur.sel_j;
+
+        // calcule la destination selon la touche
 
         if(touche == 'z' && curseur.sel_i > 0) dest_i--;
         else if(touche == 's' && curseur.sel_i < L-1) dest_i++;
@@ -230,39 +238,60 @@ int main() {
             continue;
         }
 
+        // Récupère les items à échanger
         char item1 = plateau[curseur.sel_i][curseur.sel_j];
         char item2 = plateau[dest_i][dest_j];
 
+        int item1_special = (item1 == BOMBE || item1 == ETOILE || item1 ==  ECLAIR  || item1 == ARC_EN_CIEL);
+        int item2_special = (item2 == BOMBE || item2 == ETOILE || item2 ==  ECLAIR  || item2 == ARC_EN_CIEL);
+
+        //Effectue la permutation
         plateau[curseur.sel_i][curseur.sel_j]=item2;
          plateau[dest_i][dest_j]=item1;
 
-
-       // permuter_item(plateau,&curseur, touche);
-
+    //Vérifie les suppressions
         int marque[L][C];
-        int nb = suppression(plateau,marque);
+        int nb = suppression_special(plateau, marque);
+
+        //Actve les items spéciaux échangés
+
+        if(item1_special || item2_special){
+            if(item2_special){
+                activer_item_special(plateau, marque, curseur.sel_i, curseur.sel_j);
+            }
+            if(item1_special){
+                activer_item_special(plateau, marque, dest_i, dest_j);
+            }
+            nb = 1  ;
+        }
 
         if(nb > 0){
+               // int items_speciaux_trouves = 0;
+
+                for(int i = 0; i<L; i++){
+                    for(int j = 0; j< C;j++){
+                        //if(marque[i][j] == 1 ){
+                            char item = plateau[i][j];
+                            if(item == BOMBE || item == ETOILE || item == ECLAIR || item == ARC_EN_CIEL){
+                                if((i != curseur.sel_i || j !=curseur.sel_j) && (i != dest_i || j != dest_j)){
+                                    activer_item_special(plateau, marque, i, j);
+                                }
+                                //items_speciaux_trouves = 1;
+                            }
+                        }
+                    }
+
 
         contrat.coups_restants--;
-        int total = stabiliser_plateau(plateau,&contrat);
+        stabiliser_plateau(plateau, &contrat);
 
-
-            system("cls");
-            afficher_contrat(&contrat);
-            afficher_plateau(plateau,&curseur);
-            getch();
 
     } else{
             plateau[curseur.sel_i][curseur.sel_j] = item1;
             plateau[dest_i][dest_j] = item2;
-            deplacer_curseur(&curseur, touche);
+            //deplacer_curseur(&curseur, touche);
             curseur.selectionne = 0;
 
-            system("cls");
-            afficher_contrat(&contrat);
-            afficher_plateau(plateau,&curseur);
-            getch();
     }
     } else{
         deplacer_curseur(&curseur,touche);
@@ -273,14 +302,23 @@ int main() {
 
   }  else if (choix == 2){
     printf("OBJECTIF :\n");
-    printf("Colletez les items demandés dans le contrat\n");
-    printf("en un nombre limité de coups\n");
+    printf("Colletez les items demandes dans le contrat\n");
+    printf("en un nombre limite de coups\n");
 
     printf("COMMANDES : \n");
-    printf("z/q/d/s ou les flèches de direction : Pour déplacer le curseur");
-    printf("ESPACE : Sélectionner un item\n");
+    printf("z/q/d/s ou les fleches de direction : Pour deplacer le curseur\n");
+    printf("ESPACE : Selectionner un item\n");
     printf("z/q/d/s : Permuter avec un autre item\n");
-    printf("ESC : Pour quitter(coûte une vie)\n\n");
+    printf("M : pour desactiver la musique\n");
+    printf("m : pour activer la musique\n");
+    printf("ESC : Pour quitter(coute une vie)\n");
+
+    printf("ITEMS SPECIAUX\n");
+    printf("B(Bombe) : Alignez 4 items - Detruit 3*3\n");
+     printf("E(ETOILE) : Alignez 5 items  horizontaux- Detruit la ligne\n");
+      printf("L(ECLAIR) : Alignez 5 items verticaux- Detruit la colonne\n");
+    printf("Appuyer sur une touche...");
+    getch();
     }
 
    } while(choix !=3);

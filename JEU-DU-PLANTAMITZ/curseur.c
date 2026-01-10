@@ -1,5 +1,10 @@
 #include "header.h"
 
+/**
+* Déplace le curseur sur le plateau en fonction de touche appuyée
+*z/q/s/d ou les flèches de directionnelles
+*/
+
 void deplacer_curseur(Curseur *c, char touche){
     switch(touche){
     case 'z':
@@ -21,21 +26,35 @@ void deplacer_curseur(Curseur *c, char touche){
     }
 }
 
+/**
+*Sélectionne ou désélectionne un item
+*sauvegarde sa position lorsqu'il est sélectionné
+*/
+
 void selectionner_item(Curseur *c){
     if (c->selectionne ){
+            //Désélectionne
         c-> selectionne = 0;
     } else {
+        //Sélctionne
           c-> selectionne = 1;
             c-> sel_i = c -> ligne;
              c-> sel_j = c -> colonne;
     }
 }
 
+/**
+*permute l'item sélectionné avec un voisi
+*selon la direction donnée
+*/
+
 void permuter_item(char tab[L][C], Curseur *c, char direction){
     if(!c->selectionne) return ;
 
     int position_i = c->sel_i;
     int position_j = c->sel_j;
+
+    // Calcul de la destionation
 
     switch(direction){
         case 'z':
@@ -59,26 +78,32 @@ void permuter_item(char tab[L][C], Curseur *c, char direction){
 
     }
 
+    // Echange des deux items
     char temp = tab[c->sel_i][c->sel_j];
     tab[c->sel_i][c->sel_j] = tab[position_i][position_j];
     tab[position_i][position_j] = temp;
 
-    /*c->colonne = position_j;
-    c->sel_i = position_i;
-    c->sel_j = position_j;*/
-
+    //Désélection après permutation
     c->selectionne =0;
 
 }
 
+/**
+*Détecte tous les alignements
+*Remplit la tableau "marque"
+*Retourne le nombre d'items supprimés
+*/
 int suppression(char tab[L][C], int marque[L][C]){
     int total = 0;
+
+    //Initialisation
     for(int i =0 ; i<L;i++){
             for(int j =0 ; j< C; j++){
         marque[i][j  ] = 0;
             }
     }
 
+    //Alignements horizontaux
     for(int i =0 ; i<L;i++){
              for(int j =0 ; j< C; j++){
                 char item = tab[i][j];
@@ -98,6 +123,7 @@ int suppression(char tab[L][C], int marque[L][C]){
              }
     }
 
+    //Alignements verticaux
     for (int j =0 ; j<C;j++){
         for(int i =0; i< L-2; i++){
             char item = tab[i][j];
@@ -117,6 +143,7 @@ int suppression(char tab[L][C], int marque[L][C]){
         }
     }
 
+    //carré 2*2
     for (int i = 0; i<L-1; i++){
         for(int j =0 ; j< C-1;j++){
             char item = tab[i][j];
@@ -135,6 +162,7 @@ int suppression(char tab[L][C], int marque[L][C]){
         }
     }
 
+    //forme en H
      for (int i = 0; i<L-2; i++){
         for(int j =0 ; j< C-2;j++){
             char item = tab[i][j];
@@ -161,6 +189,9 @@ int suppression(char tab[L][C], int marque[L][C]){
     return total;
 }
 
+/**
+*Supprime les items marqués
+*/
 void supprimer_marques(char tab[L][C], int marque[L][C]){
     for(int i= 0; i<L;i++){
         for(int j=0;j<C;j++){
@@ -171,6 +202,9 @@ void supprimer_marques(char tab[L][C], int marque[L][C]){
     }
 }
 
+/**
+*Fait tomber les items vers le bas
+*/
  void faire_tomber_item(char tab[L][C]){
      for(int j = 0;j<C;j++){
         int destination = L -1;
@@ -187,6 +221,9 @@ void supprimer_marques(char tab[L][C], int marque[L][C]){
      }
  }
 
+ /**
+*Remplit les cases vides avec les items aléatoires
+*/
  void remplir_vide(char tab[L][C]){
      for(int i =0; i< L; i++){
         for(int j = 0; j<C; j++){
@@ -197,12 +234,19 @@ void supprimer_marques(char tab[L][C], int marque[L][C]){
      }
  }
 
+/**
+*Stabilise le plateau:
+* - supprime les alignements
+* - applique la gravité
+* - remplit les vides
+* - ajoute les points
+*/
 int stabiliser_plateau(char tab[L][C],Contrat *c){
      int total_supprime = 0;
      int marque[L][C];
       int nb;
 
-      while((nb = suppression(tab,marque)) >0 ){
+      while((nb = suppression_special(tab,marque)) >0 ){
             int points = calculer_points(tab,marque);
                 c->score += points;
             compter_items_supprime(tab,marque,c);

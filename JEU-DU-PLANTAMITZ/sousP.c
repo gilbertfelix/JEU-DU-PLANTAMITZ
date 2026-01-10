@@ -1,7 +1,7 @@
 #include "header.h"
 
 // =========================
-// Fonction 1 : Générer un item aléatoire
+// Fonction 1 : Générer un item aléatoire parmi S,F,P,O,M
 // =========================
 char generer_item(void) {
     char item[] = {'S', 'F', 'P', 'O', 'M'};
@@ -19,6 +19,8 @@ void remplir_plateau(char tab[L][C]) {
 
             char c;
             int valide = 0;
+
+            // Boucle jusqu'à trouver un item qui ne crée pas d'alignement
 
             while (!valide) {
                 c = generer_item();
@@ -120,32 +122,77 @@ void Color(int couleurDuTexte, int couleurDeFond) {
     HANDLE H = GetStdHandle(STD_OUTPUT_HANDLE);
     SetConsoleTextAttribute(H, couleurDeFond * 16 + couleurDuTexte);
 }
+/**
+*Affiche un item avec sa couleur correspondante
+*/
 
 void afficher_items(char item) {
     switch(item) {
-        case 'S': Color(14,0); break;
-        case 'F': Color(12,0); break;
-        case 'P': Color(10,0); break;
-        case 'O': Color(8,0);  break;
-        case 'M': Color(13,0); break;
-        default:  Color(15,0);
+        case BOMBE:
+            Color(4, 0);
+            printf("B");
+            break;
+
+            case ETOILE:
+            Color(11, 0);
+            printf("E");
+            break;
+
+            case ECLAIR:
+            Color(14, 0);
+            printf("L");
+            break;
+
+            case ARC_EN_CIEL:
+            Color(13, 0);
+            printf("R");
+            break;
+        case 'S':
+             Color(14,0);
+             printf("S");
+              break;
+        case 'F':
+            Color(12,0);
+            printf("F");
+             break;
+        case 'P':
+            Color(10,0);
+            printf("P");
+             break;
+        case 'O':
+            Color(8,0);
+            printf("O");
+              break;
+        case 'M':
+             Color(13,0);
+             printf("M");
+              break;
+        default:
+            Color(15,0);
+            printf("  ");
+            break;
     }
-    printf("%c ", item);
     Color(15,0);
 }
 
+/**
+*Affiche le plateau  complet avec le curseur
+*/
+
 void afficher_plateau(char tab[L][C], Curseur *c) {
     for (int i = 0; i < L; i++) {
-            //gotoligcol(7+ i , 6);
+
         for (int j = 0; j < C; j++) {
             gotoligcol(5 + i , 2+ (j*2));
 
             char  item = tab[i][j];
 
+            //Item sélctionné : affichage en minuscule
             if (c->selectionne && i == c->sel_i && j == c->sel_j){
                 item = tolower(item);
             }
 
+            //positionnement du curseur : fond blanc
             if(i== c->ligne && j == c-> colonne ){
                 Color(0,15);
                 printf("%c ",item);
@@ -157,12 +204,16 @@ void afficher_plateau(char tab[L][C], Curseur *c) {
         }
     }
 }
+/**
+*Positionne le curseur console à une position donnée
+*/
 
 void gotoligcol( int lig, int col )
 {
-// ressources
 COORD mycoord;
 mycoord.X = col;
 mycoord.Y = lig;
 SetConsoleCursorPosition( GetStdHandle( STD_OUTPUT_HANDLE ), mycoord );
 }
+
+
